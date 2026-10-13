@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Finance Tracker</title>
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header>
+    <h1>Student Finance Tracker</h1>
+    <nav aria-label="Main navigation">
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#dashboard">Dashboard</a></li>
+        <li><a href="#records">Records</a></li>
+        <li><a href="#form">Add</a></li>
+        <li><a href="#settings">Settings</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+
+    <section id="about" aria-labelledby="about-title">
+      <h2 id="about-title">About</h2>
+      <p>Track your student spending, set a monthly cap, and search your records with regex.</p>
+      <p>
+        GitHub: <a href="https://github.com/tikenwe">tikenwe</a><br>
+        Email: <a href="mailto:t.ikenwe@alustudent.com">t.ikenwe@alustudent.com</a>
+      </p>
+    </section>
+
+    <section id="dashboard" aria-labelledby="dashboard-title">
+      <h2 id="dashboard-title">Dashboard</h2>
+      <div class="stats">
+        <p>Total records: <strong id="stat-count">0</strong></p>
+        <p>Total spent: <strong id="stat-total">0</strong></p>
+        <p>Top category: <strong id="stat-top">None</strong></p>
+      </div>
+      <p id="cap-message" role="status" aria-live="polite"></p>
+      <h3>Last 7 days</h3>
+      <div id="trend-chart" aria-label="Spending over the last 7 days"></div>
+    </section>
+
+    <section id="form" aria-labelledby="form-title">
+      <h2 id="form-title">Add transaction</h2>
+      <form id="txn-form" novalidate>
+        <div class="field">
+          <label for="description">Description</label>
+          <input type="text" id="description" name="description" required>
+          <span class="error" id="description-error" role="alert"></span>
+        </div>
+        <div class="field">
+          <label for="amount">Amount</label>
+          <input type="text" id="amount" name="amount" inputmode="decimal" required>
+          <span class="error" id="amount-error" role="alert"></span>
+        </div>
+        <div class="field">
+          <label for="currency">Currency</label>
+          <select id="currency" name="currency"></select>
+        </div>
+        <div class="field">
+          <label for="category">Category</label>
+          <select id="category" name="category"></select>
+          <span class="error" id="category-error" role="alert"></span>
+        </div>
+        <div class="field">
+          <label for="date">Date</label>
+          <input type="text" id="date" name="date" placeholder="YYYY-MM-DD" required>
+          <span class="error" id="date-error" role="alert"></span>
+        </div>
+        <button type="submit">Save</button>
+        <button type="reset">Clear</button>
+      </form>
+      <p id="form-status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="records" aria-labelledby="records-title">
+      <h2 id="records-title">Records</h2>
+      <div class="toolbar">
+        <div class="field">
+          <label for="search">Search (regex)</label>
+          <input type="text" id="search" placeholder="e.g. coffee|tea">
+          <span class="error" id="search-error" role="alert"></span>
+        </div>
+        <div class="field">
+          <input type="checkbox" id="case-toggle" checked>
+          <label for="case-toggle">Ignore case</label>
+        </div>
+        <div class="field">
+          <label for="sort">Sort by</label>
+          <select id="sort">
+            <option value="date-desc">Date (newest)</option>
+            <option value="date-asc">Date (oldest)</option>
+            <option value="desc-asc">Description (A to Z)</option>
+            <option value="desc-desc">Description (Z to A)</option>
+            <option value="amount-asc">Amount (low to high)</option>
+            <option value="amount-desc">Amount (high to low)</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <caption>Your transactions</caption>
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Description</th>
+              <th scope="col">Category</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="records-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="settings" aria-labelledby="settings-title">
+      <h2 id="settings-title">Settings</h2>
+      <form id="settings-form" novalidate>
+        <div class="field">
+          <label for="base-currency">Base currency</label>
+          <select id="base-currency">
+            <option value="RWF">RWF</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="rate-usd">Rate: 1 USD in base currency</label>
+          <input type="text" id="rate-usd" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="rate-eur">Rate: 1 EUR in base currency</label>
+          <input type="text" id="rate-eur" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="cap">Monthly cap</label>
+          <input type="text" id="cap" inputmode="decimal">
+        </div>
+        <button type="submit">Save settings</button>
+      </form>
+
+      <h3>Import / Export</h3>
+      <button type="button" id="export-btn">Export JSON</button>
+      <label for="import-file">Import JSON</label>
+      <input type="file" id="import-file" accept="application/json">
+      <p id="data-status" role="status" aria-live="polite"></p>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>Student Finance Tracker &middot; Built by Tess</p>
+  </footer>
+</body>
+</html>
