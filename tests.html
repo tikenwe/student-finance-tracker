@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Validator tests</title>
+  <style>
+    body { font-family: system-ui, sans-serif; padding: 1rem; line-height: 1.6; }
+    .pass { color: #0a6b2d; }
+    .fail { color: #b00020; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Validator tests</h1>
+  <p id="summary" role="status"></p>
+  <ul id="results"></ul>
+
+  <script type="module">
+    import {
+      validateDescription,
+      validateAmount,
+      validateDate,
+      validateCategory,
+    } from './scripts/validators.js';
+
+    const results = [];
+
+    function check(name, actual, expected) {
+      results.push({ name, passed: actual === expected });
+    }
+
+    // Description
+    check('Description: normal text is valid', validateDescription('Lunch at cafeteria').valid, true);
+    check('Description: leading space is rejected', validateDescription(' Lunch').valid, false);
+    check('Description: trailing space is rejected', validateDescription('Lunch ').valid, false);
+    check('Description: double space is rejected', validateDescription('Lunch  at').valid, false);
+    check('Description: duplicate word is rejected', validateDescription('coffee coffee').valid, false);
+    check('Description: empty is rejected', validateDescription('').valid, false);
+
+    // Amount
+    check('Amount: 12.50 is valid', validateAmount('12.50').valid, true);
+    check('Amount: 0 is valid', validateAmount('0').valid, true);
+    check('Amount: 0.5 is valid', validateAmount('0.5').valid, true);
+    check('Amount: 3 decimals is rejected', validateAmount('12.505').valid, false);
+    check('Amount: leading zero is rejected', validateAmount('012').valid, false);
+    check('Amount: negative is rejected', validateAmount('-5').valid, false);
+    check('Amount: letters are rejected', validateAmount('abc').valid, false);
+
+    // Date
+    check('Date: 2026-10-12 is valid', validateDate('2026-10-12').valid, true);
+    check('Date: leap day 2024-02-29 is valid', validateDate('2024-02-29').valid, true);
+    check('Date: 2026-02-31 is rejected', validateDate('2026-02-31').valid, false);
+    check('Date: 2026-02-29 is rejected', validateDate('2026-02-29').valid, false);
+    check('Date: month 13 is rejected', validateDate('2026-13-01').valid, false);
+    check('Date: wrong format is rejected', validateDate('26-10-12').valid, false);
+
+    // Category
+    check('Category: Food is valid', validateCategory('Food').valid, true);
+    check('Category: Fast-food is valid', validateCategory('Fast-food').valid, true);
+    check('Category: Eating out is valid', validateCategory('Eating out').valid, true);
+    check('Category: digits are rejected', validateCategory('Food2').valid, false);
+    check('Category: double space is rejected', validateCategory('Food  out').valid, false);
+    check('Category: leading hyphen is rejected', validateCategory('-Food').valid, false);
+
+    // Show results
+    const list = document.getElementById('results');
+    results.forEach((r) => {
+      const li = document.createElement('li');
+      li.className = r.passed ? 'pass' : 'fail';
+      li.textContent = (r.passed ? 'PASS: ' : 'FAIL: ') + r.name;
+      list.appendChild(li);
+    });
+    const passed = results.filter((r) => r.passed).length;
+    document.getElementById('summary').textContent =
+      passed + ' of ' + results.length + ' tests passed.';
+  </script>
+</body>
+</html>

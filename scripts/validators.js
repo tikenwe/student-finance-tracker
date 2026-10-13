@@ -1,4 +1,3 @@
-js
 // scripts/validators.js
 // Regex rules and validation functions for the Student Finance Tracker.
 
